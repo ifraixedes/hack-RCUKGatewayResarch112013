@@ -20,11 +20,24 @@
       "http://gtr.rcuk.ac.uk/*"
     ],
     "content_scripts": [ 
-        {
-            "matches": ["http://gtr.rcuk.ac.uk/*"],
-            "js": ["/scripts/vendor/miso.ds.deps.min.0.3.0.js", "/scripts/api.js", "/scripts/app.js", "/scripts/graph.js"]  
-        }
+      {
+          "matches": ["http://gtr.rcuk.ac.uk/*"],
+          "js": [
+            "/bower_components/lodash/dist/lodash.min.js", 
+            "/bower_components/miso.dataset/dist/miso.ds.deps.min.0.4.1.js",
+            "/bower_components/d3/d3.min.js",
+            "/bower_components/d3.chart/d3.chart.min.js",
+            "/scripts/app.js"
+          ],  
+          "css": ["/styles/graphs.css"]
+      },
+      {
+          "matches": ["http://gtr.rcuk.ac.uk/person/*"],
+          "js": ["/scripts/person.graph.js"]
+      }
     ],
     "web_accessible_resources": [
-    ]
+      "/data/organisations-person.json",
+      "/data/person.json"
+]
 }
