@@ -3,23 +3,6 @@
 var width = 960;
 var height = 500;
 
-/*
-var dataset = new Miso.Dataset({
-  url: chrome.extension.getURL('/data/organisations-person.json')
-});
-
-/*
-dataset.fetch({
-  success: function () {
-    //console.log(this.columnNames());
-  },
-  error: function () {
-    console.error(this);
-  }
-});
-*/
-
-
 var data = {};
 
 function personCallback(error, personData) {
@@ -70,6 +53,8 @@ function draw(nodes, links) {
   .size([width, height]);
 
   svg = d3.select('body')
+  .append('div')
+  .attr('class', 'GtRExplorer')
   .append('svg')
   .attr("height", height)
   .attr("width", width);
@@ -132,11 +117,4 @@ function draw(nodes, links) {
 }
 
 d3.json(chrome.extension.getURL('/data/organisations-person.json'), orgsCallback); 
-d3.json(chrome.extension.getURL('/data/person.json'), personCallback); 
-
-
-
-
-
-
-
+d3.json(chrome.extension.getURL('/data/person.json'), personCallback);
