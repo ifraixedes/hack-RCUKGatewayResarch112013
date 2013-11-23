@@ -12,5 +12,12 @@
         "scripts": [
             "scripts/background.js"
         ]
-    }
+    },
+    "permissions": [
+      "webRequest",
+      "webRequestBlocking",
+      "http://*.gtr.rcuk.ac.uk/*"
+    ],
+    "web_accessible_resources": [
+    ]
 }
