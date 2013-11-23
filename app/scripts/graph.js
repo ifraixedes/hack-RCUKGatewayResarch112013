@@ -1,7 +1,17 @@
 'use strict';
 
-alert('hi');
 
-var dataSet = new Miso.Dataset({
-  url: '/data/organisations-person.json'
+var dataset = new Miso.Dataset({
+  url: chrome.extension.getURL('/data/organisations-person.json')
 });
+
+dataset.fetch({
+  success: function () {
+    //console.log(this.columnNames());
+  },
+  error: function () {
+    console.error(this);
+  }
+});
+
+
