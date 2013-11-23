@@ -8,7 +8,7 @@ chrome.webRequest.onBeforeRequest.addListener(function (details) {
   //return {redirectUrl: chrome.extension.getURL('html/graph.html')};
 }, 
 {
-  urls: ['http://hack.gtr.rcuk.ac.uk/*']
+  urls: ['http://gtr.rcuk.ac.uk/*']
 }, 
 ['blocking']);
 
