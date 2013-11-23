@@ -1,0 +1,10 @@
+{
+  "appName": {
+    "message": "RCUKGatewayResearchHack",
+    "description": "The name of the application"
+  },
+  "appDescription": {
+    "message": "Improve the search of http://gtr.rcuk.ac.uk/ with data visualisation",
+    "description": "The description of the application"
+  }
+}
