@@ -1,0 +1,16 @@
+.node {
+  stroke: #fff;
+  stroke-width: 1.5px;
+}
+
+.node-org {
+  fill: #fff
+}
+
+.node-pers {
+  fill: #ff0000
+}
+
+.link {
+}
+
