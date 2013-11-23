@@ -50,11 +50,11 @@ function transformData(data) {
   var nodes = [];
   var links = [];
 
-  nodes.push(_.extend(_.pick(data.person, ['id', 'href', 'firstName', 'otherNames', 'surname', 'email']), {style: 'pers'}));
+  nodes.push(_.extend(_.pick(data.person, ['id', 'href', 'firstName', 'otherNames', 'surname', 'email']), {objType: 'person'}));
 
   data.organisations.organisation.forEach(function (org, idx) {
-    nodes.push(_.extend(_.pick(org, ['id', 'href', 'name', 'website', 'addresses']), {class: 'org'}));  
-    links.push({source: 0, target: idx + 1, class: 'pers-org'});
+    nodes.push(_.extend(_.pick(org, ['id', 'href', 'name', 'website', 'addresses']), {objType: 'organisation'}));  
+    links.push({source: 0, target: idx + 1, class: 'link-pers-org'});
   });
 
 
@@ -81,10 +81,8 @@ function draw(nodes, links) {
   link = svg.selectAll(".link")
       .data(links)
       .enter().append("line")
-      .attr("class", "link");
 
-  link.append('class')
-      .text(function (d) { return 'link ' + d.class});
+  link.attr('class', function (d) { return 'link ' + d.class; });
 
   node = svg.selectAll(".node")
       .data(nodes)
@@ -93,10 +91,33 @@ function draw(nodes, links) {
       .call(force.drag);
 
   node.append("title")
-      .text(function(d) { return d.name; });
+      .text(function(d) { 
+        switch (d.objType) {
+          case 'person': 
+            return d.firstName + ' ' + d.otherNanes + ' ' + d.surname;
+          case 'organisation': 
+            return d.name;
+          default:
+            return null; 
+        };
+      });
 
-  node.append('class')
-      .text(function (d) { return 'node ' + d.class});
+  node.attr('class', function (d) { 
+    var typedClass;
+    
+    switch (d.objType) {
+      case 'person': 
+        typedClass = ' node-pers';
+        break;
+      case 'organisation': 
+        typedClass = ' node-org';
+        break;
+      default:
+        typedClass = ''; 
+    };
+
+    return 'node' + typedClass;
+  });
 
   force.on("tick", function() {
     link.attr("x1", function(d) { return d.source.x; })
