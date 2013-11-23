@@ -8,6 +8,7 @@
         "128": "images/icon-128.png"
     },
     "default_locale": "en",
+    "content_security_policy": "default-src 'self'",
     "background": {
         "scripts": [
             "scripts/background.js"
@@ -21,7 +22,7 @@
     "content_scripts": [ 
         {
             "matches": ["http://gtr.rcuk.ac.uk/*"],
-            "js": ["/scripts/api.js", "/scripts/app.js"]  
+            "js": ["/scripts/vendor/miso.ds.deps.min.0.3.0.js", "/scripts/api.js", "/scripts/app.js", "/scripts/graph.js"]  
         }
     ],
     "web_accessible_resources": [

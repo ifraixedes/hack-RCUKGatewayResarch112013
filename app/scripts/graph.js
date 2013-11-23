@@ -1,7 +1,7 @@
 'use strict';
 
-var dataSet = new Miso.DataSet({
+alert('hi');
+
+var dataSet = new Miso.Dataset({
   url: '/data/organisations-person.json'
 });
-
-console.log(dataSet);
