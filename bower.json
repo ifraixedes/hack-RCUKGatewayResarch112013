@@ -1,6 +1,9 @@
 {
   "name": "rcukgatewayresearchhack",
   "version": "0.0.0",
-  "dependencies": {},
+  "dependencies": {
+    "lodash": "~2.3.0",
+    "d3": "~3.3.10"
+  },
   "devDependencies": {}
 }
