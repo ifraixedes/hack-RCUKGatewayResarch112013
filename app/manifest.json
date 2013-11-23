@@ -18,8 +18,11 @@
       "webRequestBlocking",
       "http://gtr.rcuk.ac.uk/*"
     ],
-    "content_scripts": [
-      
+    "content_scripts": [ 
+        {
+            "matches": ["http://gtr.rcuk.ac.uk/*"],
+            "js": ["/scripts/api.js", "/scripts/app.js"]  
+        }
     ],
     "web_accessible_resources": [
     ]
