@@ -10,6 +10,10 @@ GtR.personsOrganisations = function(id) {
     return GtR.baseURL+'persons/'+id+'/organisations';
 };
 
+GtR.personsProjects = function(id) {
+    return GtR.baseURL+'persons/'+id+'/projects';
+};
+
 GtR.organisations = function(id) {
     return GtR.baseURL+'organisations/'+id;
 };
