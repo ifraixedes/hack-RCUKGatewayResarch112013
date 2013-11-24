@@ -1,9 +1,10 @@
 .GtRExplorer {
-    width: 50%;
+    padding: 0 10px;
+    width: 450px;
+    height: 100%;
     position: fixed;
     top: 0;
     right: 0;
-    height: 100%;
     background: white;
 }
 
