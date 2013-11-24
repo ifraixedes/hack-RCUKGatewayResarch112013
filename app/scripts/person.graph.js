@@ -179,19 +179,19 @@ function createGraph(nodes, links) {
       nodeElem.remove();
     }
 
-    linkElem = svg.selectAll(".link")
+    linkElem = svg.selectAll('.link')
       .data(links)
-      .enter().append("line");
+      .enter().append('line');
 
     linkElem.attr('class', function (d) { return 'link ' + d.class; });
 
-    nodeElem = svg.selectAll(".node")
+    nodeElem = svg.selectAll('.node')
       .data(nodes)
-      .enter().append("circle")
-      .attr("r", 15)
+      .enter().append('circle')
+      .attr('r', 15)
       .call(force.drag);
 
-    nodeElem.append("title")
+    nodeElem.append('title')
       .text(function(d) { 
         var title = null;
 
@@ -331,8 +331,8 @@ function createGraph(nodes, links) {
   loadSidebar();
   svg = d3.select('.GtRExplorer .graph')
   .append('svg')
-  .attr("height", height)
-  .attr("width", width);
+  .attr('height', height)
+  .attr('width', width);
   
   force.nodes(nodes)
     .links(links)
@@ -340,26 +340,26 @@ function createGraph(nodes, links) {
 
   draw();
 
-  force.on("tick", function() {
-    linkElem.attr("x1", function(d) { return d.source.x; })
-    .attr("y1", function(d) { return d.source.y; })
-    .attr("x2", function(d) { return d.target.x; })
-    .attr("y2", function(d) { return d.target.y; });
+  force.on('tick', function() {
+    linkElem.attr('x1', function(d) { return d.source.x; })
+    .attr('y1', function(d) { return d.source.y; })
+    .attr('x2', function(d) { return d.target.x; })
+    .attr('y2', function(d) { return d.target.y; });
 
-    nodeElem.attr("cx", function(d) { return d.x; })
-    .attr("cy", function(d) { return d.y; });
+    nodeElem.attr('cx', function(d) { return d.x; })
+    .attr('cy', function(d) { return d.y; });
   });
 
   /*
-    linkElem.attr("x1", function(d) { 
+    linkElem.attr('x1', function(d) { 
       return (isNaN(d.source.x)) ? undefined : d.source.x; 
     })
-    .attr("y1", function(d) { return (isNaN(d.source.y)) ? undefined : d.source.y; })
-    .attr("x2", function(d) { return (isNaN(d.target.x)) ? undefined : d.target.x; })
-    .attr("y2", function(d) { return (isNaN(d.target.y)) ? undefined : d.target.y; });
+    .attr('y1', function(d) { return (isNaN(d.source.y)) ? undefined : d.source.y; })
+    .attr('x2', function(d) { return (isNaN(d.target.x)) ? undefined : d.target.x; })
+    .attr('y2', function(d) { return (isNaN(d.target.y)) ? undefined : d.target.y; });
 
-    nodeElem.attr("cx", function(d) { return (isNaN(d.x)) ? undefined : d.x; })
-        .attr("cy", function(d) { return (isNaN(d.y)) ? undefined : d.y; });
+    nodeElem.attr('cx', function(d) { return (isNaN(d.x)) ? undefined : d.x; })
+        .attr('cy', function(d) { return (isNaN(d.y)) ? undefined : d.y; });
   */
 }
 
