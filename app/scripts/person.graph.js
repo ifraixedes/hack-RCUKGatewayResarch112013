@@ -219,17 +219,18 @@ function createGraph(nodes, links) {
     }
 
     function cleanProjectURL(url) {
-        return url.replace(/\:80\/gtr\/api\/projects/, '/projects');
+        return url.replace(/\:80\/gtr\/api\/projects/, '/project');
     }
 
     function cleanOrganisationURL(url) {
-        return url.replace(/\:80\/gtr\/api\/organisation/, '/organisation');
+        return url.replace(/\:80\/gtr\/api\/organisations/, '/organisation');
     }
 
     nodeElem.on('click', function (datum, idx) {
       var bgReqNum = 0;
       var panelElem = d3.select('.GtRExplorer .panel');
       var childElem;
+      var url;
 
       panelElem.select('div').remove();
 
@@ -244,7 +245,7 @@ function createGraph(nodes, links) {
             panelElem.append('h1').text(datum.firstName + ' ' + datum.surname);
           }
           
-          var url = cleanPersonURL(datum.href);
+          url = cleanPersonURL(datum.href);
           panelElem.append('a').attr('href', url).text('→ ' + url);
 
           break;
@@ -263,7 +264,8 @@ function createGraph(nodes, links) {
             childElem.append('a').attr(datum.website).text(datum.website).append('br');
           }
 
-          panelElem.append('a').attr('href', datum.href).text(datum.href);
+          url = cleanOrganisationURL(datum.href);
+          panelElem.append('a').attr('href', url).text('→ ' + url);
           
           break;
         case 'project': 
@@ -287,7 +289,8 @@ function createGraph(nodes, links) {
 
           }
 
-          panelElem.append('a').attr('href', datum.href).text(datum.href);
+          url = cleanProjectURL(datum.href);
+          panelElem.append('a').attr('href', url).text('→ ' + url);
       }
       
       if (userNodesSelection.indexOf(datum) >= 0) {
