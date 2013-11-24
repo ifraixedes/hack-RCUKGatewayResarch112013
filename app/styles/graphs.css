@@ -1,19 +1,28 @@
+.GtRExplorer {
+    width: 50%;
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100%;
+    background: white;
+}
+
 .node {
-  stroke: #00000;
-  stroke-width: 1.5px;
+    stroke: #00000;
+    stroke-width: 1.5px;
 }
 
 .node-org {
-  fill: #000fff
+    fill: #000fff
 }
 
 .node-pers {
-  fill: #ff0000
+    fill: #ff0000
 }
 
 .link {
-  stroke: #999;
-  stroke-opacity: .6;
+    stroke: #999;
+    stroke-opacity: .6;
 }
 
 
