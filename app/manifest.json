@@ -37,8 +37,6 @@
       }
     ],
     "web_accessible_resources": [
-      "/data/organisations-person.json",
-      "/data/projects-person.json",
-      "/data/person.json"
+      "/images/toggle.png"
 ]
 }
