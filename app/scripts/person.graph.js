@@ -49,21 +49,22 @@ function projectsCallback(error, projectsData) {
 function transformData(data) {
   var nodes = [];
   var links = [];
-  var numElems = 0;
-
-  nodes.push(_.extend(_.pick(data.person, ['id', 'href', 'firstName', 'otherNames', 'surname', 'email']), {objType: 'person'}));
-  numElems++;
+  var rootNode = _.extend(_.pick(data.person, ['id', 'href', 'firstName', 'otherNames', 'surname', 'email']), {objType: 'person', level: 0});
+  
+  nodes.push(rootNode);
 
   data.organisations.organisation.forEach(function (org, idx) {
-    nodes.push(_.extend(_.pick(org, ['id', 'href', 'name', 'website', 'addresses']), {objType: 'organisation'}));  
-    links.push({source: 0, target: numElems++, class: 'link-pers-org'});
+    var node = _.extend(_.pick(org, ['id', 'href', 'name', 'website', 'addresses']), {objType: 'organisation', level: 1});
+    nodes.push(node);
+    links.push({source: rootNode, target: node, class: 'link-pers-org'});
   });
   
   data.projects.project.forEach(function (project, idx) {
-    nodes.push(_.extend(_.pick(project, [
+    var node = _.extend(_.pick(project, [
       'id', 'href', 'title', 'status', 'grantCategory', 'techAbstractText', 'potentialImpact', 'start', 'end'
-    ]), {objType: 'project'}));  
-    links.push({source: 0, target: numElems++, class: 'link-pers-proj'});
+    ]), {objType: 'project', level: 1});
+    nodes.push(node);  
+    links.push({source: rootNode, target: node, class: 'link-pers-proj'});
   });
 
   draw(nodes, links);
@@ -74,7 +75,7 @@ function draw(nodes, links) {
 
   force= d3.layout.force()
   .charge(-120)
-  .linkDistance(30)
+  .linkDistance(70)
   .size([width, height]);
 
   svg = d3.select('body')
@@ -123,6 +124,13 @@ function draw(nodes, links) {
         return title;
       });
 
+  node.on('click', function (datum, idx) {
+    console.log(idx);
+    console.log(datum);
+    console.log(links);
+    selectNode(datum, links); 
+  });
+
   node.attr('class', function (d) { 
     var typedClass;
     
@@ -153,6 +161,10 @@ function draw(nodes, links) {
         .attr("cy", function(d) { return d.y; });
   });
 
+}
+
+function selectNode(selectedDatum, links) {
+  var link =  _.findWhere(links, {target: selectedDatum}); 
 }
 
 var id = getID();
