@@ -217,6 +217,9 @@ function createGraph(nodes, links) {
     nodeElem.on('click', function (datum, idx) {
       var bgReqNum = 0;
       var panelElem = d3.select('.GtRExplorer .panel');
+      var childElem;
+
+      panelElem.select('div').remove();
 
       switch (datum.objType) {
         case 'person': 
@@ -232,7 +235,46 @@ function createGraph(nodes, links) {
           panelElem.append('a').attr('href', datum.href).text(datum.href);
 
           break;
+        case 'organisation': 
+          panelElem.append('div').attr('class', 'organisation');  
+          panelElem = panelElem.select('div');
+          
+          panelElem.append('h1').text(datum.name);
+          childElem = panelElem.append('p');
+          
+          if (datum.address) {
+            childElem.append('span').text(datum.address).append('br');
+          }
+          
+          if (datum.website) {
+            childElem.append('a').attr(datum.website).text(datum.website).append('br');
+          }
 
+          panelElem.append('a').attr('href', datum.href).text(datum.href);
+          
+          break;
+        case 'project': 
+          panelElem.append('div').attr('class', 'project');  
+          panelElem = panelElem.select('div');
+          
+          panelElem.append('h1').text(datum.title);
+          childElem = panelElem.append('p');
+
+          if (datum.status) {
+            childElem.append('span').text('Status: ' + datum.status).append('br');
+
+          }
+          
+          if (datum.grantCategory) {
+            childElem.append('span').text('Grant Category: ' + datum.grantCategory).append('br');
+          }
+
+          if (datum.start || datum.end) { 
+            childElem.append('span').text('Start: ' + (datum.start || '--') + ' // End: ' + (datum.end || '--')).append('br');
+
+          }
+
+          panelElem.append('a').attr('href', datum.href).text(datum.href);
       }
       
       if (userNodesSelection.indexOf(datum) >= 0) {
@@ -261,7 +303,7 @@ function createGraph(nodes, links) {
             if (--bgReqNum === 0) {
               force.start();
               draw();
-            }
+            } 
           }));
 
           break;
