@@ -3,7 +3,26 @@
 var width = 960;
 var height = 500;
 
-var data = {};
+/*
+var dataset = new Miso.Dataset({
+  url: chrome.extension.getURL('/data/organisations-person.json')
+});
+
+/*
+dataset.fetch({
+  success: function () {
+    //console.log(this.columnNames());
+  },
+  error: function () {
+    console.error(this);
+  }
+});
+*/
+
+
+var data = {
+  count: 3 
+};
 
 function personCallback(error, personData) {
   if (error) {
@@ -11,8 +30,9 @@ function personCallback(error, personData) {
   }
   
   data.person = personData;
+  data.count--;
   
-  if (data.organisations) {
+  if (data.count === 0) {
     transformData(data);
   }
 }
@@ -23,8 +43,22 @@ function orgsCallback(error, orgsData) {
   }
   
   data.organisations = orgsData;
+  data.count--;
   
-  if (data.person) {
+  if (data.count === 0) {
+    transformData(data);
+  }
+}
+
+function projectsCallback(error, projectsData) {
+  if (error) {
+    return;
+  }
+  
+  data.projects = JSON.parse(projectsData.response);
+  data.count--;
+  
+  if (data.count === 0) {
     transformData(data);
   }
 }
@@ -32,14 +66,22 @@ function orgsCallback(error, orgsData) {
 function transformData(data) {
   var nodes = [];
   var links = [];
+  var numElems = 0;
 
   nodes.push(_.extend(_.pick(data.person, ['id', 'href', 'firstName', 'otherNames', 'surname', 'email']), {objType: 'person'}));
+  numElems++;
 
   data.organisations.organisation.forEach(function (org, idx) {
     nodes.push(_.extend(_.pick(org, ['id', 'href', 'name', 'website', 'addresses']), {objType: 'organisation'}));  
-    links.push({source: 0, target: idx + 1, class: 'link-pers-org'});
+    links.push({source: 0, target: numElems++, class: 'link-pers-org'});
   });
-
+  
+  data.projects.project.forEach(function (project, idx) {
+    nodes.push(_.extend(_.pick(project, [
+      'id', 'href', 'title', 'status', 'grantCategory', 'techAbstractText', 'potentialImpact', 'start', 'end'
+    ]), {objType: 'project'}));  
+    links.push({source: 0, target: numElems++, class: 'link-pers-proj'});
+  });
 
   draw(nodes, links);
 }
@@ -53,8 +95,6 @@ function draw(nodes, links) {
   .size([width, height]);
 
   svg = d3.select('body')
-  .append('div')
-  .attr('class', 'GtRExplorer')
   .append('svg')
   .attr("height", height)
   .attr("width", width);
@@ -77,14 +117,21 @@ function draw(nodes, links) {
 
   node.append("title")
       .text(function(d) { 
+        var title = null;
         switch (d.objType) {
           case 'person': 
-            return d.firstName + ' ' + d.otherNanes + ' ' + d.surname;
+            if (d.otherNanes) { 
+              title = d.firstName + ' ' + d.otherNanes + ' ' + d.surname;
+            } else {
+              title = d.firstName + ' ' d.surname;
+            }
           case 'organisation': 
-            return d.name;
-          default:
-            return null; 
+            title =  d.name;
+          case 'project': 
+            title = d.title;
         };
+
+        return title;
       });
 
   node.attr('class', function (d) { 
@@ -96,6 +143,9 @@ function draw(nodes, links) {
         break;
       case 'organisation': 
         typedClass = ' node-org';
+        break;
+      case 'project': 
+        typedClass = 'node-proj';
         break;
       default:
         typedClass = ''; 
@@ -117,4 +167,5 @@ function draw(nodes, links) {
 }
 
 d3.json(chrome.extension.getURL('/data/organisations-person.json'), orgsCallback); 
-d3.json(chrome.extension.getURL('/data/person.json'), personCallback);
+d3.json(chrome.extension.getURL('/data/projects-person.json'), projectsCallback); 
+d3.json(chrome.extension.getURL('/data/person.json'), personCallback); 

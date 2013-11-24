@@ -11,6 +11,10 @@
   fill: #ff0000
 }
 
+.node-proj {
+  fill: #00ff00
+}
+
 .link {
   stroke: #999;
   stroke-opacity: .6;
