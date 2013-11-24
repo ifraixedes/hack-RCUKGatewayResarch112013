@@ -71,12 +71,18 @@ function transformData(data) {
 }
 
 function draw(nodes, links) {
-  var link, node, force, svg;
+  var linkElem, nodeElem, force, svg, userNodesSelection = [];
 
   force= d3.layout.force()
   .charge(-120)
-  .linkDistance(70)
-  .size([width, height]);
+  .size([width, height])
+  .linkDistance(function (link, idx) {
+    if (userNodesSelection.indexOf(link.target) >= 0) {
+      return 120;
+    } else {
+      return 70;
+    }
+  });
 
   svg = d3.select('body')
   .append('div')
@@ -89,19 +95,19 @@ function draw(nodes, links) {
     .links(links)
     .start();
 
-  link = svg.selectAll(".link")
+  linkElem = svg.selectAll(".link")
       .data(links)
       .enter().append("line");
 
-  link.attr('class', function (d) { return 'link ' + d.class; });
+  linkElem.attr('class', function (d) { return 'link ' + d.class; });
 
-  node = svg.selectAll(".node")
+  nodeElem = svg.selectAll(".node")
       .data(nodes)
       .enter().append("circle")
       .attr("r", 15)
       .call(force.drag);
 
-  node.append("title")
+  nodeElem.append("title")
       .text(function(d) { 
         var title = null;
 
@@ -124,14 +130,12 @@ function draw(nodes, links) {
         return title;
       });
 
-  node.on('click', function (datum, idx) {
-    console.log(idx);
-    console.log(datum);
-    console.log(links);
-    selectNode(datum, links); 
+  nodeElem.on('click', function (datum, idx) {
+    userNodesSelection.push(datum);
+    force.start();
   });
 
-  node.attr('class', function (d) { 
+  nodeElem.attr('class', function (d) { 
     var typedClass;
     
     switch (d.objType) {
@@ -152,19 +156,15 @@ function draw(nodes, links) {
   });
 
   force.on("tick", function() {
-    link.attr("x1", function(d) { return d.source.x; })
+    linkElem.attr("x1", function(d) { return d.source.x; })
         .attr("y1", function(d) { return d.source.y; })
         .attr("x2", function(d) { return d.target.x; })
         .attr("y2", function(d) { return d.target.y; });
 
-    node.attr("cx", function(d) { return d.x; })
+    nodeElem.attr("cx", function(d) { return d.x; })
         .attr("cy", function(d) { return d.y; });
   });
 
-}
-
-function selectNode(selectedDatum, links) {
-  var link =  _.findWhere(links, {target: selectedDatum}); 
 }
 
 var id = getID();
