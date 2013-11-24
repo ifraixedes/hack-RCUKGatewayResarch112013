@@ -115,6 +115,11 @@
     line-height: 13px;
 }
 
+.GtRExplorer .legend {
+    padding: 20px;
+    min-height: 70px;
+}
+
 .node {
     stroke: #00000;
     stroke-width: 1.5px;
@@ -141,7 +146,5 @@
     stroke-opacity: .6;
 }
 
-
 .link-pers-org {
 }
-
