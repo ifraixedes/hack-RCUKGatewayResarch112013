@@ -52,26 +52,173 @@ function transformData(data) {
   var rootNode = _.extend(_.pick(data.person, ['id', 'href', 'firstName', 'otherNames', 'surname', 'email']), {objType: 'person', level: 0});
   
   nodes.push(rootNode);
-
-  data.organisations.organisation.forEach(function (org, idx) {
-    var node = _.extend(_.pick(org, ['id', 'href', 'name', 'website', 'addresses']), {objType: 'organisation', level: 1});
-    nodes.push(node);
-    links.push({source: rootNode, target: node, class: 'link-pers-org'});
-  });
-  
-  data.projects.project.forEach(function (project, idx) {
-    var node = _.extend(_.pick(project, [
-      'id', 'href', 'title', 'status', 'grantCategory', 'techAbstractText', 'potentialImpact', 'start', 'end'
-    ]), {objType: 'project', level: 1});
-    nodes.push(node);  
-    links.push({source: rootNode, target: node, class: 'link-pers-proj'});
-  });
-
-  draw(nodes, links);
+  addOrganisations(nodes, links, rootNode, data.organisations); 
+  addProjects(nodes, links, rootNode, data.projects);
+  createGraph(nodes, links);
 }
 
-function draw(nodes, links) {
+
+function addPersons(nodes, links, parentNode, remotePersonsData) {
+  var level = parentNode.level + 1;
+  var styleClass;
+
+  switch (parentNode.objType) {
+    case 'project':
+      styleClass = 'link-proj-pers';
+      break;
+    case 'organisation':
+      styleClass = 'link-org-pers';
+      break;
+    default:
+      styleClass = '';
+  }
+
+  remotePersonsData.person.forEach(function (pers, idx) {
+    var node = _.extend(_.pick(data.person, ['id', 'href', 'firstName', 'otherNames', 'surname', 'email']), {objType: 'person', level: level});
+    nodes.push(node);
+    links.push({source: parentNode, target: node, class: styleClass});
+  });
+}
+
+function addOrganisations(nodes, links, parentNode, remoteOrgsData) {
+  var level = parentNode.level + 1;
+  var styleClass;
+
+  switch (parentNode.objType) {
+    case 'project':
+      styleClass = 'link-proj-org';
+      break;
+    case 'person':
+      styleClass = 'link-pers-org';
+      break;
+    default:
+      styleClass = '';
+  }
+
+  remoteOrgsData.organisation.forEach(function (org, idx) {
+    var node = _.extend(_.pick(org, ['id', 'href', 'name', 'website', 'addresses']), {objType: 'organisation', level: level});
+    nodes.push(node);
+    links.push({source: parentNode, target: node, class: styleClass});
+  });
+}
+
+function addProjects(nodes, links, parentNode, remoteProjectsData) {
+  var level = parentNode.level + 1;
+  var styleClass;
+
+  switch (parentNode.objType) {
+    case 'organisation':
+      styleClass = 'link-org-proj';
+      break;
+    case 'person':
+      styleClass = 'link-org-proj';
+      break;
+    default:
+      styleClass = '';
+  }
+
+  remoteProjectsData.project.forEach(function (project, idx) {
+    var node = _.extend(_.pick(project, [
+      'id', 'href', 'title', 'status', 'grantCategory', 'techAbstractText', 'potentialImpact', 'start', 'end'
+    ]), {objType: 'project', level: level});
+    nodes.push(node);  
+    links.push({source: parentNode, target: node, class: styleClass});
+  });
+}
+
+function createGraph(nodes, links) {
   var linkElem, nodeElem, force, svg, userNodesSelection = [];
+
+  function draw() {
+
+    if (linkElem) {
+      linkElem.remove();
+    }
+
+    linkElem = svg.selectAll(".link")
+      .data(links)
+      .enter().append("line");
+
+    linkElem.attr('class', function (d) { return 'link ' + d.class; });
+
+    if (nodeElem) {
+      nodeElem.remove();
+    }
+
+    nodeElem = svg.selectAll(".node")
+      .data(nodes)
+      .enter().append("circle")
+      .attr("r", 15)
+      .call(force.drag);
+
+    nodeElem.append("title")
+      .text(function(d) { 
+        var title = null;
+
+        switch (d.objType) {
+          case 'person': 
+            if (d.otherNames) { 
+            title = d.firstName + ' ' + d.otherNames + ' ' + d.surname;
+          } else {
+            title = d.firstName + ' ' + d.surname;
+          }
+
+          break;
+          case 'organisation': 
+            title =  d.name;
+          break;
+          case 'project': 
+            title = d.title;
+        };
+
+        return title;
+      });
+
+    nodeElem.on('click', function (datum, idx) {
+      userNodesSelection.push(datum);
+
+      switch (datum.objType) {
+        case 'organisation': 
+          d3.xhr(GtR.organisationsProjects(datum.id), 'application/json', xhrRespToJSONCallback(function (projectsData) {
+            addProjects(nodes, links, datum, projectsData);
+            force.start();
+            draw();
+          }));
+
+          break;
+        case 'project':
+          d3.xhr(GtR.projectsPersons(datum.id), 'application/json', xhrRespToJSONCallback(function (personsData) {
+            addPersons(nodes, links, datum, personsData);
+            force.start();
+            draw();
+          }));
+
+        break;
+        default:
+          force.start();
+      } 
+    });
+
+    nodeElem.attr('class', function (d) { 
+      var typedClass;
+
+      switch (d.objType) {
+        case 'person': 
+          typedClass = ' node-pers';
+        break;
+        case 'organisation': 
+          typedClass = ' node-org';
+        break;
+        case 'project': 
+          typedClass = ' node-proj';
+        break;
+        default:
+          typedClass = ''; 
+      };
+
+      return 'node' + typedClass;
+    });
+  }
 
   force= d3.layout.force()
   .charge(-120)
@@ -95,65 +242,7 @@ function draw(nodes, links) {
     .links(links)
     .start();
 
-  linkElem = svg.selectAll(".link")
-      .data(links)
-      .enter().append("line");
-
-  linkElem.attr('class', function (d) { return 'link ' + d.class; });
-
-  nodeElem = svg.selectAll(".node")
-      .data(nodes)
-      .enter().append("circle")
-      .attr("r", 15)
-      .call(force.drag);
-
-  nodeElem.append("title")
-      .text(function(d) { 
-        var title = null;
-
-        switch (d.objType) {
-          case 'person': 
-            if (d.otherNames) { 
-              title = d.firstName + ' ' + d.otherNames + ' ' + d.surname;
-            } else {
-              title = d.firstName + ' ' + d.surname;
-            }
-            
-            break;
-          case 'organisation': 
-            title =  d.name;
-            break;
-          case 'project': 
-            title = d.title;
-        };
-
-        return title;
-      });
-
-  nodeElem.on('click', function (datum, idx) {
-    userNodesSelection.push(datum);
-    force.start();
-  });
-
-  nodeElem.attr('class', function (d) { 
-    var typedClass;
-    
-    switch (d.objType) {
-      case 'person': 
-        typedClass = ' node-pers';
-        break;
-      case 'organisation': 
-        typedClass = ' node-org';
-        break;
-      case 'project': 
-        typedClass = ' node-proj';
-        break;
-      default:
-        typedClass = ''; 
-    };
-
-    return 'node' + typedClass;
-  });
+  draw();
 
   force.on("tick", function() {
     linkElem.attr("x1", function(d) { return d.source.x; })
@@ -164,7 +253,17 @@ function draw(nodes, links) {
     nodeElem.attr("cx", function(d) { return d.x; })
         .attr("cy", function(d) { return d.y; });
   });
+}
 
+function xhrRespToJSONCallback(fn) {
+  return function (error, data) {
+    if (error) {
+      console.error(error);
+      return;
+    }
+
+    fn(JSON.parse(data.response));
+  };
 }
 
 var id = getID();
