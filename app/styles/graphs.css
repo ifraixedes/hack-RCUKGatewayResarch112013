@@ -120,6 +120,18 @@
     min-height: 70px;
 }
 
+.GtRExplorer .panel .person h1 {
+    color: #DC4D00;
+}
+
+.GtRExplorer .panel .organisation h1 {
+    color: #00DCA2;
+}
+
+.GtRExplorer .panel .project h1 {
+    color: #009DDC;
+}
+
 .GtRExplorer .panel a {
     font-size: 10px;
     color: #13597D;
