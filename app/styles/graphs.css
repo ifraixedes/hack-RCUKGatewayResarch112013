@@ -120,6 +120,12 @@
     min-height: 70px;
 }
 
+.GtRExplorer .panel a {
+    font-size: 10px;
+    color: #13597D;
+    text-decoration: none;
+}
+
 .node {
     stroke: #00000;
     stroke-width: 1.5px;
