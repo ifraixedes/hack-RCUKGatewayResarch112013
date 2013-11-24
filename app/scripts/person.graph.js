@@ -78,6 +78,8 @@ function draw(nodes, links) {
   .size([width, height]);
 
   svg = d3.select('body')
+  .append('div')
+  .attr('class', 'GtRExplorer')
   .append('svg')
   .attr("height", height)
   .attr("width", width);
@@ -101,15 +103,19 @@ function draw(nodes, links) {
   node.append("title")
       .text(function(d) { 
         var title = null;
+
         switch (d.objType) {
           case 'person': 
-            if (d.otherNanes) { 
-              title = d.firstName + ' ' + d.otherNanes + ' ' + d.surname;
+            if (d.otherNames) { 
+              title = d.firstName + ' ' + d.otherNames + ' ' + d.surname;
             } else {
               title = d.firstName + ' ' + d.surname;
             }
+            
+            break;
           case 'organisation': 
             title =  d.name;
+            break;
           case 'project': 
             title = d.title;
         };
