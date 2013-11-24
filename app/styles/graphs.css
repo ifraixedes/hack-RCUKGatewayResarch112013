@@ -1,32 +1,35 @@
 .GtRExplorer {
-    width: 450px;
+    width: 470px;
     height: 100%;
     position: fixed;
     top: 0;
     right: 0;
-    background: white;
+    background: #F3F3F3;
     font-family: Helvetica, Arial, sans-serif;
     font-size: 12px;
 }
 
 .GtRExplorer .sideStrip {
     width: 40px;
-    background: #006DCC;
     height: 100%;
     float: left;
+    background: #006CCC;
 }
 
 .GtRExplorer .display {
-    padding: 0 10px;
-    margin-left: 50px;
+    margin-left: 40px;
+    background: #F3F3F3;
 }
 
 .GtRExplorer .heading {
-    padding: 10px 0;
+    padding: 10px 10px 0;
     text-align: right;
+    border-bottom: 1px solid #D4D4D4;
 }
 
-.GtRExplorer .graph {}
+.GtRExplorer .graph {
+    background: #FDFDFD;
+}
 
 .GtRExplorer h1 {
     font-size: 12px;
@@ -43,15 +46,15 @@
 }
 
 .node-org {
-    fill: #000fff
+    fill: #00DBA2;
 }
 
 .node-pers {
-    fill: #ff0000
+    fill: #DB4D00;
 }
 
 .node-proj {
-  fill: #00ff00
+  fill: #009EDB;
 }
 
 .link {
