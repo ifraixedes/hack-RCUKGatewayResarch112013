@@ -41,7 +41,49 @@
 
 .GtRExplorer .graph {
     background: #FDFDFD;
+}
+
+.GtRExplorer .legend {
+    padding: 10px;
+    background: #FDFDFD;
     border-bottom: 1px solid #D4D4D4;
+}
+
+.GtRExplorer .legend span {
+    margin-right: 10px;
+    text-indent: 10px;
+    position: relative;
+    left: 10px;
+}
+
+.GtRExplorer .legend .person:before {
+    content:'';
+    display: inline-block;
+    background: #DC4D00;
+    height: 10px;
+    width: 10px;
+    position: relative;
+    right: 0;
+}
+
+.GtRExplorer .legend .organisation:before {
+    content:'';
+    display: inline-block;
+    background: #00DCA2;
+    height: 10px;
+    width: 10px;
+    position: relative;
+    right: 0;
+}
+
+.GtRExplorer .legend .project:before {
+    content:'';
+    display: inline-block;
+    background: #009DDC;
+    height: 10px;
+    width: 10px;
+    position: relative;
+    right: 0;
 }
 
 .GtRExplorer h1 {

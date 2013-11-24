@@ -34,6 +34,9 @@ function loadSidebar() {
 
     display.appendChild(heading);
     display.appendChild(graph);
+    
+    legend.innerHTML = '<span class="person"> Person</span><span class="organisation"> Organisation</span><span class="project"> Project</span>';
+    
     display.appendChild(legend);
     display.appendChild(panel);
 
