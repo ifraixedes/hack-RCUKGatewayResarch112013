@@ -16,7 +16,6 @@ function create(type, klass) {
     return elem;
 }
 
-
 function loadSidebar() {
     var body = document.body,
         container = create('div', 'GtRExplorer'),
@@ -27,6 +26,10 @@ function loadSidebar() {
         graph = create('div', 'graph'),
         legend = create('div', 'legend'),
         panel = create('div', 'panel');
+
+    toggle.onclick = function() {
+        container.classList.toggle('collapsed');
+    };
 
     sideStrip.appendChild(toggle);
 
