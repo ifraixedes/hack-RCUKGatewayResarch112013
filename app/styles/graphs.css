@@ -13,6 +13,10 @@
     stroke-width: 1.5px;
 }
 
+.node:hover {
+    cursor: pointer;
+}
+
 .node-org {
     fill: #000fff
 }
