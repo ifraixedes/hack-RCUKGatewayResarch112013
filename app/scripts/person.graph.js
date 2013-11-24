@@ -175,23 +175,81 @@ function createGraph(nodes, links) {
       });
 
     nodeElem.on('click', function (datum, idx) {
+      var bgReqNum = 0;
+      
+      if (userNodesSelection.indexOf(datum) >= 0) {
+        return;
+      }
+
       userNodesSelection.push(datum);
 
       switch (datum.objType) {
         case 'organisation': 
+          bgReqNum = 2;
+
           d3.xhr(GtR.organisationsProjects(datum.id), 'application/json', xhrRespToJSONCallback(function (projectsData) {
             addProjects(nodes, links, datum, projectsData);
-            force.start();
-            draw();
+
+            if (--bgReqNum === 0) {
+              force.start();
+              draw();
+            }
+          }));
+          
+          d3.xhr(GtR.organisationsPersons(datum.id), 'application/json', xhrRespToJSONCallback(function (personsData) {
+            addPersons(nodes, links, datum, personsData);
+            
+            if (--bgReqNum === 0) {
+              force.start();
+              draw();
+            }
           }));
 
           break;
         case 'project':
+          bgReqNum = 2;
+
           d3.xhr(GtR.projectsPersons(datum.id), 'application/json', xhrRespToJSONCallback(function (personsData) {
             addPersons(nodes, links, datum, personsData);
-            force.start();
-            draw();
+            
+            if (--bgReqNum === 0) {
+              force.start();
+              draw();
+            }
           }));
+          
+          d3.xhr(GtR.projectsOrganisations(datum.id), 'application/json', xhrRespToJSONCallback(function (organisationsData) {
+            addOrganisations(nodes, links, datum, organisationsData);
+
+            if (--bgReqNum === 0) {
+              force.start();
+              draw();
+            }
+          }));
+          
+
+        break;
+        case 'person':
+          bgReqNum = 2;
+
+          d3.xhr(GtR.personsProjects(datum.id), 'application/json', xhrRespToJSONCallback(function (projectsData) {
+            addProjects(nodes, links, datum, projectsData);
+            
+            if (--bgReqNum === 0) {
+              force.start();
+              draw();
+            }
+          }));
+          
+          d3.xhr(GtR.personsOrganisations(datum.id), 'application/json', xhrRespToJSONCallback(function (organisationsData) {
+            addOrganisations(nodes, links, datum, organisationsData);
+
+            if (--bgReqNum === 0) {
+              force.start();
+              draw();
+            }
+          }));
+          
 
         break;
         default:
