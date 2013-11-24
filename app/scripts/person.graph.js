@@ -214,6 +214,18 @@ function createGraph(nodes, links) {
         return title;
       });
 
+    function cleanPersonURL(url) {
+        return url.replace(/\:80\/gtr\/api\/persons/, '/person');
+    }
+
+    function cleanProjectURL(url) {
+        return url.replace(/\:80\/gtr\/api\/projects/, '/projects');
+    }
+
+    function cleanOrganisationURL(url) {
+        return url.replace(/\:80\/gtr\/api\/organisation/, '/organisation');
+    }
+
     nodeElem.on('click', function (datum, idx) {
       var bgReqNum = 0;
       var panelElem = d3.select('.GtRExplorer .panel');
@@ -228,8 +240,9 @@ function createGraph(nodes, links) {
           } else {
             panelElem.append('h1').text(datum.firstName + ' ' + datum.surname);
           }
-
-          panelElem.append('a').attr('href', datum.href).text(datum.href);
+          
+          var url = cleanPersonURL(datum.href);
+          panelElem.append('a').attr('href', url).text('→ ' + url);
 
           break;
 
