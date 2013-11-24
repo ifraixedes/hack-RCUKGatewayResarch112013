@@ -328,9 +328,8 @@ function createGraph(nodes, links) {
     }
   });
 
-  svg = d3.select('body')
-  .append('div')
-  .attr('class', 'GtRExplorer')
+  loadSidebar();
+  svg = d3.select('.GtRExplorer .graph')
   .append('svg')
   .attr("height", height)
   .attr("width", width);
