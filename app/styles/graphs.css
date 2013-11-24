@@ -16,6 +16,18 @@
     background: #006CCC;
 }
 
+.GtRExplorer .toggle {
+    width: 20px;
+    height: 20px;
+    background: url('chrome-extension://__MSG_@@extension_id__/images/toggle.png');
+    display: block;
+    margin: 10px auto;
+}
+
+.GtRExplorer .toggle.collapsed {
+    background: url('chrome-extension://__MSG_@@extension_id__/images/toggle.png') 40px 17px;
+}
+
 .GtRExplorer .display {
     margin-left: 40px;
     background: #F3F3F3;
