@@ -73,10 +73,24 @@ function addPersons(nodes, links, parentNode, remotePersonsData) {
       styleClass = '';
   }
 
-  remotePersonsData.person.forEach(function (pers, idx) {
-    var node = _.extend(_.pick(data.person, ['id', 'href', 'firstName', 'otherNames', 'surname', 'email']), {objType: 'person', level: level});
-    nodes.push(node);
-    links.push({source: parentNode, target: node, class: styleClass});
+  remotePersonsData.person.forEach(function (person, idx) {
+    var node, link;
+
+    node = _.findWhere(nodes, {id: person.id, objType: 'person'});
+
+    if (node) {
+      link = _.findWhere(links, {source: parentNode, target: node});
+
+      if (!link) {
+        links.push({source: parentNode, target: node, class: styleClass});
+      }
+
+    } else {
+      node = _.extend(_.pick(person, ['id', 'href', 'firstName', 'otherNames', 'surname', 'email']), {objType: 'person', level: level});
+      nodes.push(node);
+      links.push({source: parentNode, target: node, class: styleClass});
+    }
+    
   });
 }
 
@@ -96,9 +110,22 @@ function addOrganisations(nodes, links, parentNode, remoteOrgsData) {
   }
 
   remoteOrgsData.organisation.forEach(function (org, idx) {
-    var node = _.extend(_.pick(org, ['id', 'href', 'name', 'website', 'addresses']), {objType: 'organisation', level: level});
-    nodes.push(node);
-    links.push({source: parentNode, target: node, class: styleClass});
+    var node, link;
+
+    node = _.findWhere(nodes, {id: org.id, objType: 'organisation'});
+
+    if (node) {
+      link = _.findWhere(links, {source: parentNode, target: node});
+
+      if (!link) {
+        links.push({source: parentNode, target: node, class: styleClass});
+      }
+
+    } else {
+      node = _.extend(_.pick(org, ['id', 'href', 'name', 'website', 'addresses']), {objType: 'organisation', level: level});
+      nodes.push(node);
+      links.push({source: parentNode, target: node, class: styleClass});
+    }
   });
 }
 
@@ -118,11 +145,24 @@ function addProjects(nodes, links, parentNode, remoteProjectsData) {
   }
 
   remoteProjectsData.project.forEach(function (project, idx) {
-    var node = _.extend(_.pick(project, [
-      'id', 'href', 'title', 'status', 'grantCategory', 'techAbstractText', 'potentialImpact', 'start', 'end'
-    ]), {objType: 'project', level: level});
-    nodes.push(node);  
-    links.push({source: parentNode, target: node, class: styleClass});
+    var node, link;
+
+    node = _.findWhere(nodes, {id: project.id, objType: 'project'});
+
+    if (node) {
+      link = _.findWhere(links, {source: parentNode, target: node});
+
+      if (!link) {
+        links.push({source: parentNode, target: node, class: styleClass});
+      }
+
+    } else {
+      node = _.extend(_.pick(project, [
+        'id', 'href', 'title', 'status', 'grantCategory', 'techAbstractText', 'potentialImpact', 'start', 'end'
+      ]), {objType: 'project', level: level});
+      nodes.push(node);  
+      links.push({source: parentNode, target: node, class: styleClass});
+    }
   });
 }
 
@@ -135,15 +175,15 @@ function createGraph(nodes, links) {
       linkElem.remove();
     }
 
+    if (nodeElem) {
+      nodeElem.remove();
+    }
+
     linkElem = svg.selectAll(".link")
       .data(links)
       .enter().append("line");
 
     linkElem.attr('class', function (d) { return 'link ' + d.class; });
-
-    if (nodeElem) {
-      nodeElem.remove();
-    }
 
     nodeElem = svg.selectAll(".node")
       .data(nodes)
@@ -181,6 +221,7 @@ function createGraph(nodes, links) {
         return;
       }
 
+      force.stop();
       userNodesSelection.push(datum);
 
       switch (datum.objType) {
@@ -252,8 +293,6 @@ function createGraph(nodes, links) {
           
 
         break;
-        default:
-          force.start();
       } 
     });
 
@@ -289,9 +328,9 @@ function createGraph(nodes, links) {
     }
   });
 
-  loadSidebar();
-
-  svg = d3.select('.GtRExplorer .graph')
+  svg = d3.select('body')
+  .append('div')
+  .attr('class', 'GtRExplorer')
   .append('svg')
   .attr("height", height)
   .attr("width", width);
@@ -304,13 +343,25 @@ function createGraph(nodes, links) {
 
   force.on("tick", function() {
     linkElem.attr("x1", function(d) { return d.source.x; })
-        .attr("y1", function(d) { return d.source.y; })
-        .attr("x2", function(d) { return d.target.x; })
-        .attr("y2", function(d) { return d.target.y; });
+    .attr("y1", function(d) { return d.source.y; })
+    .attr("x2", function(d) { return d.target.x; })
+    .attr("y2", function(d) { return d.target.y; });
 
     nodeElem.attr("cx", function(d) { return d.x; })
-        .attr("cy", function(d) { return d.y; });
+    .attr("cy", function(d) { return d.y; });
   });
+
+  /*
+    linkElem.attr("x1", function(d) { 
+      return (isNaN(d.source.x)) ? undefined : d.source.x; 
+    })
+    .attr("y1", function(d) { return (isNaN(d.source.y)) ? undefined : d.source.y; })
+    .attr("x2", function(d) { return (isNaN(d.target.x)) ? undefined : d.target.x; })
+    .attr("y2", function(d) { return (isNaN(d.target.y)) ? undefined : d.target.y; });
+
+    nodeElem.attr("cx", function(d) { return (isNaN(d.x)) ? undefined : d.x; })
+        .attr("cy", function(d) { return (isNaN(d.y)) ? undefined : d.y; });
+  */
 }
 
 function xhrRespToJSONCallback(fn) {
