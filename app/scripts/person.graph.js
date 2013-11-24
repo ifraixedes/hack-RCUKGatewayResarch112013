@@ -216,6 +216,24 @@ function createGraph(nodes, links) {
 
     nodeElem.on('click', function (datum, idx) {
       var bgReqNum = 0;
+      var panelElem = d3.select('.GtRExplorer .panel');
+
+      switch (datum.objType) {
+        case 'person': 
+          panelElem.append('div').attr('class', 'person');  
+          panelElem = panelElem.select('div');
+          
+          if (datum.otherNames) {
+            panelElem.append('h1').text(datum.firstName + ' ' + datum.otherNames + ' ' + datum.surname);
+          } else {
+            panelElem.append('h1').text(datum.firstName + ' ' + datum.surname);
+          }
+
+          panelElem.append('a').attr('href', datum.href).text(datum.href);
+
+          break;
+
+      }
       
       if (userNodesSelection.indexOf(datum) >= 0) {
         return;
