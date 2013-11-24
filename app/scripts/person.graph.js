@@ -1,6 +1,6 @@
 'use strict';
 
-var width = 960;
+var width = 430;
 var height = 500;
 
 var data = {
@@ -97,7 +97,7 @@ function draw(nodes, links) {
   node = svg.selectAll(".node")
       .data(nodes)
       .enter().append("circle")
-      .attr("r", 5)
+      .attr("r", 15)
       .call(force.drag);
 
   node.append("title")
@@ -134,7 +134,7 @@ function draw(nodes, links) {
         typedClass = ' node-org';
         break;
       case 'project': 
-        typedClass = 'node-proj';
+        typedClass = ' node-proj';
         break;
       default:
         typedClass = ''; 
